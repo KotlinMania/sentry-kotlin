@@ -25,13 +25,14 @@ public fun applyDefaults(opts: ClientOptions): ClientOptions {
         result.transport = DefaultTransportFactory()
     }
     if (result.defaultIntegrations) {
-        val defaults = mutableListOf<Integration>(
-            AttachStacktraceIntegration(),
-            DebugImagesIntegration(),
-            ContextIntegration(),
-            PanicIntegration(),
-            ProcessStacktraceIntegration(),
-        )
+        val defaults =
+            mutableListOf<Integration>(
+                AttachStacktraceIntegration(),
+                DebugImagesIntegration(),
+                ContextIntegration(),
+                PanicIntegration(),
+                ProcessStacktraceIntegration(),
+            )
         defaults.addAll(result.integrations)
         result.integrations = defaults
     }
@@ -40,7 +41,8 @@ public fun applyDefaults(opts: ClientOptions): ClientOptions {
         if (envDsn != null) {
             try {
                 result.dsn = Dsn.parse(envDsn)
-            } catch (_: Exception) {}
+            } catch (_: Exception) {
+            }
         }
     }
     if (result.release == null) {

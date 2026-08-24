@@ -8,7 +8,6 @@ import kotlin.test.assertTrue
 import kotlin.time.Duration.Companion.seconds
 
 class RateLimiterTest {
-
     @Test
     fun testSentryHeader() {
         val rl = RateLimiter.new()
@@ -31,7 +30,7 @@ class RateLimiterTest {
             30::bar,
             120:invalid:invalid,
             4711:foo;bar;baz;security:project
-            """.trimIndent()
+            """.trimIndent(),
         )
 
         val txDisabled = rl.isDisabled(RateLimitingCategory.Transaction)

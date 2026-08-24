@@ -32,13 +32,14 @@ public class Span(
     public var children: List<Span> = emptyList()
 
     public fun startChild(op: String, description: String? = null): Span {
-        val child = Span(
-            traceId = traceId,
-            spanId = SpanId.random(),
-            parentSpanId = spanId,
-            op = op,
-            spanDescription = description,
-        )
+        val child =
+            Span(
+                traceId = traceId,
+                spanId = SpanId.random(),
+                parentSpanId = spanId,
+                op = op,
+                spanDescription = description,
+            )
         children = children + child
         return child
     }
@@ -65,13 +66,14 @@ public class Transaction(
     public var spans: List<Span> = emptyList()
 
     public fun startChild(op: String, description: String? = null): Span {
-        val child = Span(
-            traceId = traceId,
-            spanId = SpanId.random(),
-            parentSpanId = spanId,
-            op = op,
-            spanDescription = description,
-        )
+        val child =
+            Span(
+                traceId = traceId,
+                spanId = SpanId.random(),
+                parentSpanId = spanId,
+                op = op,
+                spanDescription = description,
+            )
         spans = spans + child
         return child
     }
@@ -80,20 +82,23 @@ public class Transaction(
         if (timestamp == null) {
             timestamp = Clock.System.now()
         }
-        val event = Event(
-            transaction = name,
-            level = Level.Info,
-            contexts = mapOf(
-                "trace" to Context.Trace(
-                    traceId = traceId,
-                    spanId = spanId,
-                    parentSpanId = context.parentSpanId,
-                    op = op,
-                    traceDescription = transactionDescription,
-                    status = status,
-                ),
-            ),
-        )
+        val event =
+            Event(
+                transaction = name,
+                level = Level.Info,
+                contexts =
+                    mapOf(
+                        "trace" to
+                            Context.Trace(
+                                traceId = traceId,
+                                spanId = spanId,
+                                parentSpanId = context.parentSpanId,
+                                op = op,
+                                traceDescription = transactionDescription,
+                                status = status,
+                            ),
+                    ),
+            )
         hub?.captureEvent(event)
         return event
     }

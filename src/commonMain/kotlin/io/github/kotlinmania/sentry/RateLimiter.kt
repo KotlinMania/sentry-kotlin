@@ -28,11 +28,12 @@ public class RateLimiter {
 
     public fun updateFromRetryAfter(header: String) {
         val seconds = header.toDoubleOrNull()
-        val newTime = if (seconds != null) {
-            Clock.System.now() + ceil(seconds).toLong().seconds
-        } else {
-            Clock.System.now() + 60.seconds
-        }
+        val newTime =
+            if (seconds != null) {
+                Clock.System.now() + ceil(seconds).toLong().seconds
+            } else {
+                Clock.System.now() + 60.seconds
+            }
         global = newTime
     }
 
@@ -74,30 +75,34 @@ public class RateLimiter {
         if (g != null && g > now) {
             return g - now
         }
-        val target = when (category) {
-            RateLimitingCategory.All -> global
-            RateLimitingCategory.Error -> error
-            RateLimitingCategory.Session -> session
-            RateLimitingCategory.Transaction -> transaction
-            RateLimitingCategory.Attachment -> attachment
-            RateLimitingCategory.LogItem -> logItem
-        } ?: return null
+        val target =
+            when (category) {
+                RateLimitingCategory.All -> global
+                RateLimitingCategory.Error -> error
+                RateLimitingCategory.Session -> session
+                RateLimitingCategory.Transaction -> transaction
+                RateLimitingCategory.Attachment -> attachment
+                RateLimitingCategory.LogItem -> logItem
+            } ?: return null
         return if (target > now) target - now else null
     }
 
     public fun isEnabled(category: RateLimitingCategory): Boolean = isDisabled(category) == null
 
     public fun filterEnvelope(envelope: Envelope): Envelope? {
-        val filteredItems = envelope.items.filter { item ->
-            val cat = when (item) {
-                is EnvelopeItem.Event -> RateLimitingCategory.Error
-                is EnvelopeItem.Attachment -> RateLimitingCategory.Attachment
-                is EnvelopeItem.ItemContainer -> when (item.container) {
-                    is ItemContainer.Logs -> RateLimitingCategory.LogItem
-                }
+        val filteredItems =
+            envelope.items.filter { item ->
+                val cat =
+                    when (item) {
+                        is EnvelopeItem.Event -> RateLimitingCategory.Error
+                        is EnvelopeItem.Attachment -> RateLimitingCategory.Attachment
+                        is EnvelopeItem.ItemContainer ->
+                            when (item.container) {
+                                is ItemContainer.Logs -> RateLimitingCategory.LogItem
+                            }
+                    }
+                isEnabled(cat)
             }
-            isEnabled(cat)
-        }
         return if (filteredItems.isNotEmpty()) {
             Envelope(headers = envelope.headers, items = filteredItems)
         } else {

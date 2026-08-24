@@ -6,16 +6,20 @@ package io.github.kotlinmania.sentry
 import kotlin.time.Clock
 import kotlin.time.Instant
 
-public enum class LogLevel(public val value: String) {
+public enum class LogLevel(
+    public val value: String,
+) {
     Trace("trace"),
     Debug("debug"),
     Info("info"),
     Warn("warn"),
     Error("error"),
-    Fatal("fatal");
+    Fatal("fatal"),
 }
 
-public data class LogAttribute(public val value: String) {
+public data class LogAttribute(
+    public val value: String,
+) {
     public companion object {
         public fun from(value: Any): LogAttribute = LogAttribute(value.toString())
     }
@@ -138,6 +142,7 @@ public data class EnvelopeHeaders(
     public val trace: DynamicSamplingContext? = null,
 ) {
     public fun withEventId(eventId: Uuid): EnvelopeHeaders = copy(eventId = eventId)
+
     public fun withTrace(trace: DynamicSamplingContext?): EnvelopeHeaders = copy(trace = trace)
 
     public companion object {
@@ -156,12 +161,19 @@ public data class DynamicSamplingContext(
     public val sampled: Boolean? = null,
 ) {
     public fun withTraceId(traceId: TraceId): DynamicSamplingContext = copy(traceId = traceId)
+
     public fun withPublicKey(publicKey: String?): DynamicSamplingContext = copy(publicKey = publicKey)
+
     public fun withSampleRate(sampleRate: Double?): DynamicSamplingContext = copy(sampleRate = sampleRate)
+
     public fun withRelease(release: String?): DynamicSamplingContext = copy(release = release)
+
     public fun withEnvironment(environment: String?): DynamicSamplingContext = copy(environment = environment)
+
     public fun withTransaction(transaction: String?): DynamicSamplingContext = copy(transaction = transaction)
+
     public fun withUserSegment(userSegment: String?): DynamicSamplingContext = copy(userSegment = userSegment)
+
     public fun withSampled(sampled: Boolean?): DynamicSamplingContext = copy(sampled = sampled)
 
     public fun toHeader(): String {
@@ -218,19 +230,31 @@ public data class DynamicSamplingContext(
                     userSegment = userSegment,
                     sampled = sampled,
                 )
-            } else null
+            } else {
+                null
+            }
         }
     }
 }
 
 public sealed class ItemContainer {
-    public data class Logs(public val logs: List<Log>) : ItemContainer()
+    public data class Logs(
+        public val logs: List<Log>,
+    ) : ItemContainer()
 }
 
 public sealed class EnvelopeItem {
-    public data class Event(public val event: io.github.kotlinmania.sentry.Event) : EnvelopeItem()
-    public data class Attachment(public val attachment: io.github.kotlinmania.sentry.Attachment) : EnvelopeItem()
-    public data class ItemContainer(public val container: io.github.kotlinmania.sentry.ItemContainer) : EnvelopeItem()
+    public data class Event(
+        public val event: io.github.kotlinmania.sentry.Event,
+    ) : EnvelopeItem()
+
+    public data class Attachment(
+        public val attachment: io.github.kotlinmania.sentry.Attachment,
+    ) : EnvelopeItem()
+
+    public data class ItemContainer(
+        public val container: io.github.kotlinmania.sentry.ItemContainer,
+    ) : EnvelopeItem()
 }
 
 public data class Event(
@@ -260,6 +284,7 @@ public data class Envelope(
     public val items: List<EnvelopeItem> = emptyList(),
 ) {
     public fun uuid(): Uuid? = headers.eventId
+
     public fun event(): Event? = items.filterIsInstance<EnvelopeItem.Event>().firstOrNull()?.event
 
     public companion object {

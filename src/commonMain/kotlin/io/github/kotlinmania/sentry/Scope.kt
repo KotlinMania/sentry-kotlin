@@ -16,11 +16,12 @@ public class Scope {
 
     public fun addBreadcrumb(breadcrumb: Breadcrumb, maxBreadcrumbs: Int = 100) {
         val updated = breadcrumbs + breadcrumb
-        breadcrumbs = if (updated.size > maxBreadcrumbs) {
-            updated.takeLast(maxBreadcrumbs)
-        } else {
-            updated
-        }
+        breadcrumbs =
+            if (updated.size > maxBreadcrumbs) {
+                updated.takeLast(maxBreadcrumbs)
+            } else {
+                updated
+            }
     }
 
     public fun clearBreadcrumbs() {
@@ -112,19 +113,25 @@ public class Scope {
         }
         val s = span
         if (s != null) {
-            event.contexts = event.contexts + ("trace" to Context.Trace(
-                traceId = s.traceId,
-                spanId = s.spanId,
-                parentSpanId = s.parentSpanId,
-                op = s.op,
-                traceDescription = s.spanDescription,
-                status = s.status,
-            ))
+            event.contexts = event.contexts + (
+                "trace" to
+                    Context.Trace(
+                        traceId = s.traceId,
+                        spanId = s.spanId,
+                        parentSpanId = s.parentSpanId,
+                        op = s.op,
+                        traceDescription = s.spanDescription,
+                        status = s.status,
+                    )
+            )
         } else if (!event.contexts.containsKey("trace")) {
-            event.contexts = event.contexts + ("trace" to Context.Trace(
-                traceId = propagationContext.traceId,
-                spanId = propagationContext.spanId,
-            ))
+            event.contexts = event.contexts + (
+                "trace" to
+                    Context.Trace(
+                        traceId = propagationContext.traceId,
+                        spanId = propagationContext.spanId,
+                    )
+            )
         }
         var processedEvent: Event? = event
         for (processor in eventProcessors) {

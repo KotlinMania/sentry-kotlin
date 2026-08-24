@@ -3,23 +3,23 @@ package io.github.kotlinmania.sentry
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import kotlin.test.assertFailsWith
 
 class BasicTest {
-
     @Test
     fun testBasicCaptureMessage() {
         var lastEventId: Uuid? = null
-        val events = TestHelpers.withCapturedEvents {
-            configureScope { scope ->
-                scope.setTag("worker", "worker1")
+        val events =
+            TestHelpers.withCapturedEvents {
+                configureScope { scope ->
+                    scope.setTag("worker", "worker1")
+                }
+                captureMessage("Hello World!", Level.Warning)
+                lastEventId = lastEventId()
             }
-            captureMessage("Hello World!", Level.Warning)
-            lastEventId = lastEventId()
-        }
         assertEquals(1, events.size)
         val event = events.first()
         assertEquals("Hello World!", event.message)
@@ -32,13 +32,14 @@ class BasicTest {
     fun testEventTraceContextFromPropagationContext() {
         var lastEventId: Uuid? = null
         var span: Span? = null
-        val events = TestHelpers.withCapturedEvents {
-            configureScope { scope ->
-                span = scope.span
+        val events =
+            TestHelpers.withCapturedEvents {
+                configureScope { scope ->
+                    span = scope.span
+                }
+                captureMessage("Hello World!", Level.Warning)
+                lastEventId = lastEventId()
             }
-            captureMessage("Hello World!", Level.Warning)
-            lastEventId = lastEventId()
-        }
         assertEquals(1, events.size)
         val event = events.first()
         val traceContext = event.contexts["trace"]
@@ -49,41 +50,42 @@ class BasicTest {
 
     @Test
     fun testBreadcrumbs() {
-        val events = TestHelpers.withCapturedEvents {
-            addBreadcrumb {
-                Breadcrumb(
-                    ty = "log",
-                    message = "Old breadcrumb to be removed",
-                )
-            }
-            configureScope { scope -> scope.clearBreadcrumbs() }
-            addBreadcrumb {
-                Breadcrumb(
-                    ty = "log",
-                    message = "First breadcrumb",
-                )
-            }
-            addBreadcrumb(
-                Breadcrumb(
-                    ty = "log",
-                    message = "Second breadcrumb",
-                )
-            )
-            addBreadcrumb {
-                listOf(
+        val events =
+            TestHelpers.withCapturedEvents {
+                addBreadcrumb {
                     Breadcrumb(
                         ty = "log",
-                        message = "Third breadcrumb",
-                    ),
+                        message = "Old breadcrumb to be removed",
+                    )
+                }
+                configureScope { scope -> scope.clearBreadcrumbs() }
+                addBreadcrumb {
                     Breadcrumb(
                         ty = "log",
-                        message = "Fourth breadcrumb",
+                        message = "First breadcrumb",
+                    )
+                }
+                addBreadcrumb(
+                    Breadcrumb(
+                        ty = "log",
+                        message = "Second breadcrumb",
                     ),
                 )
+                addBreadcrumb {
+                    listOf(
+                        Breadcrumb(
+                            ty = "log",
+                            message = "Third breadcrumb",
+                        ),
+                        Breadcrumb(
+                            ty = "log",
+                            message = "Fourth breadcrumb",
+                        ),
+                    )
+                }
+                addBreadcrumb { null }
+                captureMessage("Hello World!", Level.Warning)
             }
-            addBreadcrumb { null }
-            captureMessage("Hello World!", Level.Warning)
-        }
         assertEquals(1, events.size)
         val event = events.first()
 
@@ -102,22 +104,24 @@ class BasicTest {
     @Test
     fun testFactory() {
         var eventCount = 0
-        val testTransport = object : Transport {
-            override fun sendEnvelope(envelope: Envelope) {
-                val event = envelope.event()
-                assertNotNull(event)
-                assertEquals("test", event.message)
-                eventCount++
+        val testTransport =
+            object : Transport {
+                override fun sendEnvelope(envelope: Envelope) {
+                    val event = envelope.event()
+                    assertNotNull(event)
+                    assertEquals("test", event.message)
+                    eventCount++
+                }
             }
-        }
 
-        val options = ClientOptions(
-            dsn = Dsn.parse("http://foo@example.com/42"),
-            transport = { opts ->
-                assertEquals("example.com", opts.dsn?.host)
-                testTransport
-            },
-        )
+        val options =
+            ClientOptions(
+                dsn = Dsn.parse("http://foo@example.com/42"),
+                transport = { opts ->
+                    assertEquals("example.com", opts.dsn?.host)
+                    testTransport
+                },
+            )
 
         val hub = Hub(client = Client.from(options))
         Hub.run(hub) {
@@ -129,17 +133,18 @@ class BasicTest {
 
     @Test
     fun testReentrantConfigureScope() {
-        val events = TestHelpers.withCapturedEvents {
-            configureScope { scope1 ->
-                scope1.setTag("which_scope", "scope1")
+        val events =
+            TestHelpers.withCapturedEvents {
+                configureScope { scope1 ->
+                    scope1.setTag("which_scope", "scope1")
 
-                configureScope { scope2 ->
-                    scope2.setTag("which_scope", "scope2")
+                    configureScope { scope2 ->
+                        scope2.setTag("which_scope", "scope2")
+                    }
                 }
-            }
 
-            captureMessage("look ma, no deadlock!", Level.Info)
-        }
+                captureMessage("look ma, no deadlock!", Level.Info)
+            }
 
         assertEquals(1, events.size)
         assertEquals("scope2", events[0].tags["which_scope"])
@@ -147,18 +152,19 @@ class BasicTest {
 
     @Test
     fun testAttachmentSentFromScope() {
-        val envelopes = TestHelpers.withCapturedEnvelopes {
-            withScope({ scope ->
-                scope.addAttachment(
-                    Attachment(
-                        buffer = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9),
-                        filename = "test-file.bin",
+        val envelopes =
+            TestHelpers.withCapturedEnvelopes {
+                withScope({ scope ->
+                    scope.addAttachment(
+                        Attachment(
+                            buffer = byteArrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9),
+                            filename = "test-file.bin",
+                        ),
                     )
-                )
-            }) {
-                captureMessage("test", Level.Error)
+                }) {
+                    captureMessage("test", Level.Error)
+                }
             }
-        }
 
         assertEquals(1, envelopes.size)
         val items = envelopes[0].items.toList()
@@ -171,22 +177,23 @@ class BasicTest {
     @Test
     fun testPanicScopePop() {
         val options = ClientOptions()
-        val events = TestHelpers.withCapturedEventsOptions(
-            {
-                val hub = Hub.current()
-                val scope1 = hub.pushScope()
-                val scope2 = hub.pushScope()
+        val events =
+            TestHelpers.withCapturedEventsOptions(
+                {
+                    val hub = Hub.current()
+                    val scope1 = hub.pushScope()
+                    val scope2 = hub.pushScope()
 
-                assertFailsWith<IllegalStateException> {
-                    scope1.close()
-                }
+                    assertFailsWith<IllegalStateException> {
+                        scope1.close()
+                    }
 
-                assertFailsWith<IllegalStateException> {
-                    scope2.close()
-                }
-            },
-            options,
-        )
+                    assertFailsWith<IllegalStateException> {
+                        scope2.close()
+                    }
+                },
+                options,
+            )
 
         assertEquals(2, events.size)
         assertEquals("panic", events[0].exception[0].ty)
@@ -198,20 +205,22 @@ class BasicTest {
     @Test
     fun testBasicCaptureLog() {
         val options = ClientOptions(enableLogs = true)
-        val envelopes = TestHelpers.withCapturedEnvelopesOptions({
-            val attributes = mutableMapOf<String, LogAttribute>()
-            attributes["test"] = LogAttribute.from("a string")
-            attributes["sentry.sdk.name"] = LogAttribute.from("sentry.kotlin")
-            attributes["sentry.sdk.version"] = LogAttribute.from("0.1.0")
-            val log = Log(
-                level = LogLevel.Warn,
-                body = "this is a test",
-                traceId = TraceId.random(),
-                attributes = attributes,
-            )
+        val envelopes =
+            TestHelpers.withCapturedEnvelopesOptions({
+                val attributes = mutableMapOf<String, LogAttribute>()
+                attributes["test"] = LogAttribute.from("a string")
+                attributes["sentry.sdk.name"] = LogAttribute.from("sentry.kotlin")
+                attributes["sentry.sdk.version"] = LogAttribute.from("0.1.0")
+                val log =
+                    Log(
+                        level = LogLevel.Warn,
+                        body = "this is a test",
+                        traceId = TraceId.random(),
+                        attributes = attributes,
+                    )
 
-            Hub.current().captureLog(log)
-        }, options)
+                Hub.current().captureLog(log)
+            }, options)
 
         assertEquals(1, envelopes.size)
         val envelope = envelopes.first()
@@ -230,9 +239,10 @@ class BasicTest {
     @Test
     fun testBasicCaptureLogMacroMessage() {
         val options = ClientOptions(enableLogs = true)
-        val envelopes = TestHelpers.withCapturedEnvelopesOptions({
-            loggerInfo("Hello, world!")
-        }, options)
+        val envelopes =
+            TestHelpers.withCapturedEnvelopesOptions({
+                loggerInfo("Hello, world!")
+            }, options)
 
         assertEquals(1, envelopes.size)
         val envelope = envelopes.first()
@@ -250,17 +260,19 @@ class BasicTest {
     @Test
     fun testBasicCaptureLogMacroMessageFormatted() {
         val options = ClientOptions(enableLogs = true)
-        val envelopes = TestHelpers.withCapturedEnvelopesOptions({
-            val failedRequests = listOf("request1", "request2", "request3")
-            val template = "Critical system errors detected for user %s, total failures: %d"
-            val body = "Critical system errors detected for user test_user, total failures: ${failedRequests.size}"
-            val attributes = mapOf(
-                "sentry.message.template" to LogAttribute.from(template),
-                "sentry.message.parameter.0" to LogAttribute.from("test_user"),
-                "sentry.message.parameter.1" to LogAttribute.from(3),
-            )
-            loggerWarn(body, attributes)
-        }, options)
+        val envelopes =
+            TestHelpers.withCapturedEnvelopesOptions({
+                val failedRequests = listOf("request1", "request2", "request3")
+                val template = "Critical system errors detected for user %s, total failures: %d"
+                val body = "Critical system errors detected for user test_user, total failures: ${failedRequests.size}"
+                val attributes =
+                    mapOf(
+                        "sentry.message.template" to LogAttribute.from(template),
+                        "sentry.message.parameter.0" to LogAttribute.from("test_user"),
+                        "sentry.message.parameter.1" to LogAttribute.from(3),
+                    )
+                loggerWarn(body, attributes)
+            }, options)
 
         assertEquals(1, envelopes.size)
         val envelope = envelopes.first()
@@ -284,15 +296,17 @@ class BasicTest {
     @Test
     fun testBasicCaptureLogMacroMessageWithAttributes() {
         val options = ClientOptions(enableLogs = true)
-        val envelopes = TestHelpers.withCapturedEnvelopesOptions({
-            val attributes = mapOf(
-                "user.id" to LogAttribute.from("12345"),
-                "user.active" to LogAttribute.from(true),
-                "request.duration" to LogAttribute.from(150L),
-                "success" to LogAttribute.from(false),
-            )
-            loggerError("Failed to process request", attributes)
-        }, options)
+        val envelopes =
+            TestHelpers.withCapturedEnvelopesOptions({
+                val attributes =
+                    mapOf(
+                        "user.id" to LogAttribute.from("12345"),
+                        "user.active" to LogAttribute.from(true),
+                        "request.duration" to LogAttribute.from(150L),
+                        "success" to LogAttribute.from(false),
+                    )
+                loggerError("Failed to process request", attributes)
+            }, options)
 
         assertEquals(1, envelopes.size)
         val envelope = envelopes.first()
@@ -315,21 +329,23 @@ class BasicTest {
     @Test
     fun testBasicCaptureLogMacroMessageFormattedWithAttributes() {
         val options = ClientOptions(enableLogs = true)
-        val envelopes = TestHelpers.withCapturedEnvelopesOptions({
-            val body = "Database query users_by_region completed in 42 ms with 15 results"
-            val attributes = mapOf(
-                "hello" to LogAttribute.from("test"),
-                "operation.name" to LogAttribute.from("database_query"),
-                "operation.success" to LogAttribute.from(true),
-                "operation.time_ms" to LogAttribute.from(42L),
-                "world" to LogAttribute.from(10L),
-                "sentry.message.template" to LogAttribute.from("Database query %s completed in %d ms with %d results"),
-                "sentry.message.parameter.0" to LogAttribute.from("users_by_region"),
-                "sentry.message.parameter.1" to LogAttribute.from(42L),
-                "sentry.message.parameter.2" to LogAttribute.from(15L),
-            )
-            loggerDebug(body, attributes)
-        }, options)
+        val envelopes =
+            TestHelpers.withCapturedEnvelopesOptions({
+                val body = "Database query users_by_region completed in 42 ms with 15 results"
+                val attributes =
+                    mapOf(
+                        "hello" to LogAttribute.from("test"),
+                        "operation.name" to LogAttribute.from("database_query"),
+                        "operation.success" to LogAttribute.from(true),
+                        "operation.time_ms" to LogAttribute.from(42L),
+                        "world" to LogAttribute.from(10L),
+                        "sentry.message.template" to LogAttribute.from("Database query %s completed in %d ms with %d results"),
+                        "sentry.message.parameter.0" to LogAttribute.from("users_by_region"),
+                        "sentry.message.parameter.1" to LogAttribute.from(42L),
+                        "sentry.message.parameter.2" to LogAttribute.from(15L),
+                    )
+                loggerDebug(body, attributes)
+            }, options)
 
         assertEquals(1, envelopes.size)
         val envelope = envelopes.first()
@@ -356,39 +372,43 @@ class BasicTest {
     fun testTransactionEnvelopeDscHeaders() {
         var traceId: TraceId? = null
         val dsn = Dsn.parse("http://foo@example.com/42")
-        val envelopes = TestHelpers.withCapturedEnvelopesOptions(
-            {
-                val transactionCtx = TransactionContext.new("name transaction", "op")
-                traceId = transactionCtx.traceId
-                val transaction = startTransaction(transactionCtx)
-                configureScope { scope ->
-                    scope.span = Span(
-                        traceId = transaction.traceId,
-                        spanId = transaction.spanId,
-                        op = transaction.op,
-                    )
-                }
-                transaction.finish()
-            },
-            ClientOptions(
-                dsn = dsn,
-                tracesSampleRate = 1.0,
-            ),
-        )
+        val envelopes =
+            TestHelpers.withCapturedEnvelopesOptions(
+                {
+                    val transactionCtx = TransactionContext.new("name transaction", "op")
+                    traceId = transactionCtx.traceId
+                    val transaction = startTransaction(transactionCtx)
+                    configureScope { scope ->
+                        scope.span =
+                            Span(
+                                traceId = transaction.traceId,
+                                spanId = transaction.spanId,
+                                op = transaction.op,
+                            )
+                    }
+                    transaction.finish()
+                },
+                ClientOptions(
+                    dsn = dsn,
+                    tracesSampleRate = 1.0,
+                ),
+            )
 
         assertNotNull(traceId)
         assertEquals(1, envelopes.size)
         val envelope = envelopes.first()
         val uuid = checkNotNull(envelope.uuid())
 
-        val expected = EnvelopeHeaders.new().withEventId(uuid).withTrace(
-            DynamicSamplingContext.new()
-                .withTraceId(traceId)
-                .withPublicKey(dsn.publicKey)
-                .withSampleRate(1.0)
-                .withSampled(true)
-                .withTransaction("name transaction")
-        )
+        val expected =
+            EnvelopeHeaders.new().withEventId(uuid).withTrace(
+                DynamicSamplingContext
+                    .new()
+                    .withTraceId(traceId)
+                    .withPublicKey(dsn.publicKey)
+                    .withSampleRate(1.0)
+                    .withSampled(true)
+                    .withTransaction("name transaction"),
+            )
         assertEquals(expected.eventId, envelope.headers.eventId)
         assertEquals(expected.trace?.traceId, envelope.headers.trace?.traceId)
         assertEquals(expected.trace?.publicKey, envelope.headers.trace?.publicKey)

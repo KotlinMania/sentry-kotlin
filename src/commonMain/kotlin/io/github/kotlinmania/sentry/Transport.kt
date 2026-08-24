@@ -5,7 +5,9 @@ import kotlin.time.Duration
 
 public interface Transport {
     public fun sendEnvelope(envelope: Envelope)
+
     public fun flush(timeout: Duration): Boolean = true
+
     public fun shutdown(timeout: Duration): Boolean = flush(timeout)
 }
 
@@ -13,7 +15,9 @@ public fun interface TransportFactory {
     public fun createTransport(options: ClientOptions): Transport
 }
 
-public class DefaultTransport(public val options: ClientOptions) : Transport {
+public class DefaultTransport(
+    public val options: ClientOptions,
+) : Transport {
     private val rateLimiter = RateLimiter.new()
 
     override fun sendEnvelope(envelope: Envelope) {

@@ -42,12 +42,17 @@ public fun loggerInfo(body: String, attributes: Map<String, LogAttribute> = empt
     attrs["sentry.sdk.name"] = LogAttribute.from("sentry.kotlin")
     attrs["sentry.sdk.version"] = LogAttribute.from("0.1.0")
     attrs.putAll(attributes)
-    val log = Log(
-        level = LogLevel.Info,
-        body = body,
-        traceId = Hub.current().scope().propagationContext.traceId,
-        attributes = attrs,
-    )
+    val log =
+        Log(
+            level = LogLevel.Info,
+            body = body,
+            traceId =
+                Hub
+                    .current()
+                    .scope()
+                    .propagationContext.traceId,
+            attributes = attrs,
+        )
     Hub.current().captureLog(log)
 }
 
@@ -56,12 +61,17 @@ public fun loggerWarn(body: String, attributes: Map<String, LogAttribute> = empt
     attrs["sentry.sdk.name"] = LogAttribute.from("sentry.kotlin")
     attrs["sentry.sdk.version"] = LogAttribute.from("0.1.0")
     attrs.putAll(attributes)
-    val log = Log(
-        level = LogLevel.Warn,
-        body = body,
-        traceId = Hub.current().scope().propagationContext.traceId,
-        attributes = attrs,
-    )
+    val log =
+        Log(
+            level = LogLevel.Warn,
+            body = body,
+            traceId =
+                Hub
+                    .current()
+                    .scope()
+                    .propagationContext.traceId,
+            attributes = attrs,
+        )
     Hub.current().captureLog(log)
 }
 
@@ -70,12 +80,17 @@ public fun loggerError(body: String, attributes: Map<String, LogAttribute> = emp
     attrs["sentry.sdk.name"] = LogAttribute.from("sentry.kotlin")
     attrs["sentry.sdk.version"] = LogAttribute.from("0.1.0")
     attrs.putAll(attributes)
-    val log = Log(
-        level = LogLevel.Error,
-        body = body,
-        traceId = Hub.current().scope().propagationContext.traceId,
-        attributes = attrs,
-    )
+    val log =
+        Log(
+            level = LogLevel.Error,
+            body = body,
+            traceId =
+                Hub
+                    .current()
+                    .scope()
+                    .propagationContext.traceId,
+            attributes = attrs,
+        )
     Hub.current().captureLog(log)
 }
 
@@ -84,11 +99,16 @@ public fun loggerDebug(body: String, attributes: Map<String, LogAttribute> = emp
     attrs["sentry.sdk.name"] = LogAttribute.from("sentry.kotlin")
     attrs["sentry.sdk.version"] = LogAttribute.from("0.1.0")
     attrs.putAll(attributes)
-    val log = Log(
-        level = LogLevel.Debug,
-        body = body,
-        traceId = Hub.current().scope().propagationContext.traceId,
-        attributes = attrs,
-    )
+    val log =
+        Log(
+            level = LogLevel.Debug,
+            body = body,
+            traceId =
+                Hub
+                    .current()
+                    .scope()
+                    .propagationContext.traceId,
+            attributes = attrs,
+        )
     Hub.current().captureLog(log)
 }

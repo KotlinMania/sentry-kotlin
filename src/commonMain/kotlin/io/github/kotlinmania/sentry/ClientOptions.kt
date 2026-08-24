@@ -6,8 +6,11 @@ public data class SamplingContext(
     public val customSamplingContext: Map<String, String> = emptyMap(),
 ) {
     public fun name(): String = transactionContext.name
+
     public fun op(): String = transactionContext.op
+
     public fun traceId(): TraceId = transactionContext.traceId
+
     public fun spanId(): SpanId = transactionContext.spanId
 
     public companion object {
@@ -40,9 +43,10 @@ public data class ClientOptions(
     public var sessionMode: SessionMode = SessionMode.Application,
     public var shutdownTimeout: Long = 2000L,
 ) {
-    public fun addIntegration(integration: Integration): ClientOptions = apply {
-        integrations = integrations + integration
-    }
+    public fun addIntegration(integration: Integration): ClientOptions =
+        apply {
+            integrations = integrations + integration
+        }
 
     public companion object {
         public fun new(): ClientOptions = ClientOptions()
