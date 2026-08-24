@@ -5,19 +5,19 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class ProcessorsTest {
-
     @Test
     fun testEventProcessors() {
-        val events = TestHelpers.withCapturedEvents {
-            configureScope { scope ->
-                scope.setTag("worker", "worker1")
-                scope.addEventProcessor { event ->
-                    event.user = User(email = "foo@example.com")
-                    event
+        val events =
+            TestHelpers.withCapturedEvents {
+                configureScope { scope ->
+                    scope.setTag("worker", "worker1")
+                    scope.addEventProcessor { event ->
+                        event.user = User(email = "foo@example.com")
+                        event
+                    }
                 }
+                captureMessage("Hello World!", Level.Warning)
             }
-            captureMessage("Hello World!", Level.Warning)
-        }
 
         assertEquals(1, events.size)
         val event = events.first()
@@ -26,22 +26,24 @@ class ProcessorsTest {
 
     @Test
     fun testBeforeCallbacks() {
-        val options = ClientOptions(
-            beforeSend = { evt ->
-                evt.logger = "muh_logger"
-                evt
-            },
-            beforeBreadcrumb = { crumb ->
-                crumb.copy(message = "${crumb.message} aha!")
-            },
-        )
-
-        val events = TestHelpers.withCapturedEventsOptions({
-            addBreadcrumb(
-                Breadcrumb(message = "Testing")
+        val options =
+            ClientOptions(
+                beforeSend = { evt ->
+                    evt.logger = "muh_logger"
+                    evt
+                },
+                beforeBreadcrumb = { crumb ->
+                    crumb.copy(message = "${crumb.message} aha!")
+                },
             )
-            captureMessage("Hello World!", Level.Warning)
-        }, options)
+
+        val events =
+            TestHelpers.withCapturedEventsOptions({
+                addBreadcrumb(
+                    Breadcrumb(message = "Testing"),
+                )
+                captureMessage("Hello World!", Level.Warning)
+            }, options)
 
         assertEquals(1, events.size)
         val event = events.first()
@@ -51,32 +53,36 @@ class ProcessorsTest {
 
     @Test
     fun testBeforeEventCallbackDrop() {
-        val options = ClientOptions(
-            beforeSend = { _ -> null }
-        )
-
-        val events = TestHelpers.withCapturedEventsOptions({
-            addBreadcrumb(
-                Breadcrumb(message = "Testing")
+        val options =
+            ClientOptions(
+                beforeSend = { _ -> null },
             )
-            captureMessage("Hello World!", Level.Warning)
-        }, options)
+
+        val events =
+            TestHelpers.withCapturedEventsOptions({
+                addBreadcrumb(
+                    Breadcrumb(message = "Testing"),
+                )
+                captureMessage("Hello World!", Level.Warning)
+            }, options)
 
         assertEquals(0, events.size)
     }
 
     @Test
     fun testBeforeBreadcrumbCallbackDrop() {
-        val options = ClientOptions(
-            beforeBreadcrumb = { _ -> null }
-        )
-
-        val events = TestHelpers.withCapturedEventsOptions({
-            addBreadcrumb(
-                Breadcrumb(message = "Testing")
+        val options =
+            ClientOptions(
+                beforeBreadcrumb = { _ -> null },
             )
-            captureMessage("Hello World!", Level.Warning)
-        }, options)
+
+        val events =
+            TestHelpers.withCapturedEventsOptions({
+                addBreadcrumb(
+                    Breadcrumb(message = "Testing"),
+                )
+                captureMessage("Hello World!", Level.Warning)
+            }, options)
 
         assertEquals(1, events.size)
         val event = events.first()

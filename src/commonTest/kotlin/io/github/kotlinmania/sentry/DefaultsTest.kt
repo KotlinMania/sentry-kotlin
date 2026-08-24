@@ -5,7 +5,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class DefaultsTest {
-
     @Test
     fun testDefaultEnvironment() {
         try {

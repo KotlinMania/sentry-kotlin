@@ -797,7 +797,10 @@ tasks.register("swiftExportSmokeTest") {
             }
         }
 
-        layout.projectDirectory.dir("swift-test-harness/.build").asFile.deleteRecursively()
+        layout.projectDirectory
+            .dir("swift-test-harness/.build")
+            .asFile
+            .deleteRecursively()
 
         execOperations
             .exec {

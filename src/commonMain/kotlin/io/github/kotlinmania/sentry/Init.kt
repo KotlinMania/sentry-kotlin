@@ -30,5 +30,6 @@ public fun initSentry(dsn: String): ClientInitGuard = sentryInit(dsn)
 
 public object Sentry {
     public fun init(opts: ClientOptions): ClientInitGuard = sentryInit(opts)
+
     public fun init(dsn: String): ClientInitGuard = sentryInit(dsn)
 }

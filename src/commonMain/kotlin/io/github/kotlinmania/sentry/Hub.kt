@@ -51,14 +51,16 @@ public class Hub(
     internal fun popScopeInternal(expectedDepth: Int) {
         if (stack.size != expectedDepth) {
             popScope()
-            val ex = ExceptionValue(
-                ty = "panic",
-                value = "Popped scope guard out of order",
-            )
-            val event = Event(
-                level = Level.Fatal,
-                exception = listOf(ex),
-            )
+            val ex =
+                ExceptionValue(
+                    ty = "panic",
+                    value = "Popped scope guard out of order",
+                )
+            val event =
+                Event(
+                    level = Level.Fatal,
+                    exception = listOf(ex),
+                )
             captureEvent(event)
             throw IllegalStateException("Popped scope guard out of order")
         }
@@ -98,42 +100,47 @@ public class Hub(
     }
 
     public fun captureMessage(message: String, level: Level = Level.Info): Uuid? {
-        val event = Event(
-            message = message,
-            level = level,
-        )
+        val event =
+            Event(
+                message = message,
+                level = level,
+            )
         return captureEvent(event)
     }
 
     public fun captureError(error: Throwable): Uuid? {
-        val ex = ExceptionValue(
-            ty = error::class.simpleName ?: "Throwable",
-            value = error.message,
-        )
-        val event = Event(
-            level = Level.Error,
-            exception = listOf(ex),
-        )
+        val ex =
+            ExceptionValue(
+                ty = error::class.simpleName ?: "Throwable",
+                value = error.message,
+            )
+        val event =
+            Event(
+                level = Level.Error,
+                exception = listOf(ex),
+            )
         return captureEvent(event)
     }
 
     public fun captureLog(log: Log) {
         val currentClient = client() ?: return
         val item = EnvelopeItem.ItemContainer(ItemContainer.Logs(listOf(log)))
-        val envelope = Envelope(
-            headers = EnvelopeHeaders(eventId = Uuid.random()),
-            items = listOf(item),
-        )
+        val envelope =
+            Envelope(
+                headers = EnvelopeHeaders(eventId = Uuid.random()),
+                items = listOf(item),
+            )
         currentClient.captureEnvelope(envelope)
     }
 
     public fun addBreadcrumb(breadcrumb: Breadcrumb) {
         val beforeBreadcrumb = client()?.options()?.beforeBreadcrumb
-        val processed = if (beforeBreadcrumb != null) {
-            beforeBreadcrumb(breadcrumb)
-        } else {
-            breadcrumb
-        }
+        val processed =
+            if (beforeBreadcrumb != null) {
+                beforeBreadcrumb(breadcrumb)
+            } else {
+                breadcrumb
+            }
         if (processed != null) {
             val maxBreadcrumbs = client()?.options()?.maxBreadcrumbs ?: 100
             scope().addBreadcrumb(processed, maxBreadcrumbs)

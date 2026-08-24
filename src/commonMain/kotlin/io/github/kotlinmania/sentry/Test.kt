@@ -31,16 +31,15 @@ public class TestTransport : Transport {
 }
 
 public object TestHelpers {
-    public fun withCapturedEvents(block: () -> Unit): List<Event> {
-        return withCapturedEventsOptions(block, ClientOptions())
-    }
+    public fun withCapturedEvents(block: () -> Unit): List<Event> = withCapturedEventsOptions(block, ClientOptions())
 
     public fun withCapturedEventsOptions(block: () -> Unit, options: ClientOptions): List<Event> {
         val transport = TestTransport()
-        val opts = options.copy(
-            dsn = options.dsn ?: Dsn.parse("https://public@example.com/1"),
-            transport = { transport },
-        )
+        val opts =
+            options.copy(
+                dsn = options.dsn ?: Dsn.parse("https://public@example.com/1"),
+                transport = { transport },
+            )
         val client = Client(opts)
         val hub = Hub(client = client)
         var caught: Throwable? = null
@@ -56,16 +55,15 @@ public object TestHelpers {
         return transport.fetchAndClearEvents()
     }
 
-    public fun withCapturedEnvelopes(block: () -> Unit): List<Envelope> {
-        return withCapturedEnvelopesOptions(block, ClientOptions())
-    }
+    public fun withCapturedEnvelopes(block: () -> Unit): List<Envelope> = withCapturedEnvelopesOptions(block, ClientOptions())
 
     public fun withCapturedEnvelopesOptions(block: () -> Unit, options: ClientOptions): List<Envelope> {
         val transport = TestTransport()
-        val opts = options.copy(
-            dsn = options.dsn ?: Dsn.parse("https://public@example.com/1"),
-            transport = { transport },
-        )
+        val opts =
+            options.copy(
+                dsn = options.dsn ?: Dsn.parse("https://public@example.com/1"),
+                transport = { transport },
+            )
         val client = Client(opts)
         val hub = Hub(client = client)
         var caught: Throwable? = null

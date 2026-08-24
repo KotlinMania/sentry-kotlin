@@ -1,7 +1,9 @@
 // port-lint: source sentry/src/lib.rs
 package io.github.kotlinmania.sentry
 
-public class Client(private val options: ClientOptions) {
+public class Client(
+    private val options: ClientOptions,
+) {
     public val transport: Transport? = options.transport?.createTransport(options)
 
     public fun isEnabled(): Boolean = options.dsn != null
@@ -29,37 +31,43 @@ public class Client(private val options: ClientOptions) {
         if (processedEvent.environment == null) processedEvent.environment = options.environment
         if (processedEvent.serverName == null) processedEvent.serverName = options.serverName
 
-        val dsc = if (options.tracesSampleRate > 0.0 || options.tracesSampler != null) {
-            val traceCtx = processedEvent.contexts["trace"] as? Context.Trace
-            val traceId = traceCtx?.traceId ?: TraceId.random()
-            val sampleRate: Double = if (options.tracesSampler != null) {
-                val ctx = TransactionContext(
-                    name = processedEvent.transaction ?: "",
-                    op = traceCtx?.op ?: "",
+        val dsc =
+            if (options.tracesSampleRate > 0.0 || options.tracesSampler != null) {
+                val traceCtx = processedEvent.contexts["trace"] as? Context.Trace
+                val traceId = traceCtx?.traceId ?: TraceId.random()
+                val sampleRate: Double =
+                    if (options.tracesSampler != null) {
+                        val ctx =
+                            TransactionContext(
+                                name = processedEvent.transaction ?: "",
+                                op = traceCtx?.op ?: "",
+                                traceId = traceId,
+                                spanId = traceCtx?.spanId ?: SpanId.random(),
+                            )
+                        options.tracesSampler!!.invoke(SamplingContext.from(ctx))
+                    } else {
+                        options.tracesSampleRate
+                    }
+                DynamicSamplingContext(
                     traceId = traceId,
-                    spanId = traceCtx?.spanId ?: SpanId.random(),
+                    publicKey = options.dsn?.publicKey,
+                    sampleRate = sampleRate,
+                    sampled = sampleRate > 0.0,
+                    release = options.release,
+                    environment = options.environment,
+                    transaction = processedEvent.transaction,
                 )
-                options.tracesSampler!!.invoke(SamplingContext.from(ctx))
             } else {
-                options.tracesSampleRate
+                null
             }
-            DynamicSamplingContext(
-                traceId = traceId,
-                publicKey = options.dsn?.publicKey,
-                sampleRate = sampleRate,
-                sampled = sampleRate > 0.0,
-                release = options.release,
-                environment = options.environment,
-                transaction = processedEvent.transaction,
-            )
-        } else null
 
         val envelope = Envelope.fromEvent(processedEvent, dsc)
-        val finalEnvelope = if (scope != null && scope.attachments.isNotEmpty()) {
-            Envelope(envelope.headers, envelope.items + scope.attachments.map { EnvelopeItem.Attachment(it) })
-        } else {
-            envelope
-        }
+        val finalEnvelope =
+            if (scope != null && scope.attachments.isNotEmpty()) {
+                Envelope(envelope.headers, envelope.items + scope.attachments.map { EnvelopeItem.Attachment(it) })
+            } else {
+                envelope
+            }
 
         transport?.sendEnvelope(finalEnvelope)
         return processedEvent.eventId
@@ -78,8 +86,8 @@ public class Client(private val options: ClientOptions) {
     public companion object {
         public fun from(options: ClientOptions): Client = Client(options)
 
-        public fun fromConfig(config: Any?): Client {
-            return when (config) {
+        public fun fromConfig(config: Any?): Client =
+            when (config) {
                 is String -> {
                     val dsn = Dsn.parse(config)
                     Client(ClientOptions(dsn = dsn))
@@ -95,6 +103,5 @@ public class Client(private val options: ClientOptions) {
                 is ClientOptions -> Client(config)
                 else -> Client(ClientOptions())
             }
-        }
     }
 }

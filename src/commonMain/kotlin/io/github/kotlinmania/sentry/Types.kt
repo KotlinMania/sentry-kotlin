@@ -3,43 +3,55 @@ package io.github.kotlinmania.sentry
 
 import kotlin.random.Random
 
-public enum class Scheme(public val protocol: String) {
+public enum class Scheme(
+    public val protocol: String,
+) {
     Http("http"),
-    Https("https");
+    Https("https"),
+    ;
 
     public companion object {
-        public fun fromString(value: String): Scheme = when (value.lowercase()) {
-            "http" -> Http
-            "https" -> Https
-            else -> throw IllegalArgumentException("Unsupported scheme: $value")
-        }
+        public fun fromString(value: String): Scheme =
+            when (value.lowercase()) {
+                "http" -> Http
+                "https" -> Https
+                else -> throw IllegalArgumentException("Unsupported scheme: $value")
+            }
     }
 }
 
-public data class ProjectId(public val value: String) {
+public data class ProjectId(
+    public val value: String,
+) {
     override fun toString(): String = value
 }
 
-public enum class Level(public val value: String) {
+public enum class Level(
+    public val value: String,
+) {
     Debug("debug"),
     Info("info"),
     Warning("warning"),
     Error("error"),
-    Fatal("fatal");
+    Fatal("fatal"),
+    ;
 
     public companion object {
-        public fun fromString(value: String): Level = when (value.lowercase()) {
-            "debug" -> Debug
-            "info" -> Info
-            "warning", "warn" -> Warning
-            "error" -> Error
-            "fatal" -> Fatal
-            else -> Info
-        }
+        public fun fromString(value: String): Level =
+            when (value.lowercase()) {
+                "debug" -> Debug
+                "info" -> Info
+                "warning", "warn" -> Warning
+                "error" -> Error
+                "fatal" -> Fatal
+                else -> Info
+            }
     }
 }
 
-public data class Uuid(public val value: String) {
+public data class Uuid(
+    public val value: String,
+) {
     public fun toSimple(): String = value.replace("-", "")
 
     override fun toString(): String = value
@@ -67,7 +79,9 @@ public data class Uuid(public val value: String) {
     }
 }
 
-public data class TraceId(public val value: String) {
+public data class TraceId(
+    public val value: String,
+) {
     override fun toString(): String = value
 
     public companion object {
@@ -80,7 +94,9 @@ public data class TraceId(public val value: String) {
     }
 }
 
-public data class SpanId(public val value: String) {
+public data class SpanId(
+    public val value: String,
+) {
     override fun toString(): String = value
 
     public companion object {
@@ -114,9 +130,12 @@ public data class Dsn(
 ) {
     public fun envelopeApiUrl(): String {
         val portPart = if (port != null) ":$port" else ""
-        val pathPart = if (path.isNotEmpty()) {
-            if (path.startsWith("/")) path else "/$path"
-        } else ""
+        val pathPart =
+            if (path.isNotEmpty()) {
+                if (path.startsWith("/")) path else "/$path"
+            } else {
+                ""
+            }
         val normalizedPath = if (pathPart.endsWith("/")) pathPart else "$pathPart/"
         return "${scheme.protocol}://$host$portPart${normalizedPath}api/${projectId.value}/envelope/"
     }
@@ -130,10 +149,20 @@ public data class Dsn(
     override fun toString(): String {
         val auth = if (secretKey != null) "$publicKey:$secretKey" else publicKey
         val portPart = if (port != null) ":$port" else ""
-        val pathPart = if (path.isNotEmpty()) {
-            if (path.startsWith("/")) path else "/$path"
-        } else ""
-        val normalizedPath = if (pathPart.endsWith("/")) pathPart else if (pathPart.isNotEmpty()) "$pathPart/" else "/"
+        val pathPart =
+            if (path.isNotEmpty()) {
+                if (path.startsWith("/")) path else "/$path"
+            } else {
+                ""
+            }
+        val normalizedPath =
+            if (pathPart.endsWith("/")) {
+                pathPart
+            } else if (pathPart.isNotEmpty()) {
+                "$pathPart/"
+            } else {
+                "/"
+            }
         return "${scheme.protocol}://$auth@$host$portPart$normalizedPath${projectId.value}"
     }
 
@@ -159,12 +188,13 @@ public data class Dsn(
             val authPart = rest.substring(0, atIndex)
             val afterAuth = rest.substring(atIndex + 1)
 
-            val (publicKey, secretKey) = if (authPart.contains(':')) {
-                val parts = authPart.split(':', limit = 2)
-                Pair(parts[0], parts[1])
-            } else {
-                Pair(authPart, null)
-            }
+            val (publicKey, secretKey) =
+                if (authPart.contains(':')) {
+                    val parts = authPart.split(':', limit = 2)
+                    Pair(parts[0], parts[1])
+                } else {
+                    Pair(authPart, null)
+                }
 
             val slashIndex = afterAuth.indexOf('/')
             if (slashIndex == -1) {
@@ -173,19 +203,21 @@ public data class Dsn(
             val hostPort = afterAuth.substring(0, slashIndex)
             val pathAndProject = afterAuth.substring(slashIndex + 1)
 
-            val (host, port) = if (hostPort.contains(':')) {
-                val parts = hostPort.split(':', limit = 2)
-                Pair(parts[0], parts[1].toIntOrNull())
-            } else {
-                Pair(hostPort, null)
-            }
+            val (host, port) =
+                if (hostPort.contains(':')) {
+                    val parts = hostPort.split(':', limit = 2)
+                    Pair(parts[0], parts[1].toIntOrNull())
+                } else {
+                    Pair(hostPort, null)
+                }
 
             val lastSlash = pathAndProject.lastIndexOf('/')
-            val (path, projectIdStr) = if (lastSlash != -1) {
-                Pair(pathAndProject.substring(0, lastSlash), pathAndProject.substring(lastSlash + 1))
-            } else {
-                Pair("", pathAndProject)
-            }
+            val (path, projectIdStr) =
+                if (lastSlash != -1) {
+                    Pair(pathAndProject.substring(0, lastSlash), pathAndProject.substring(lastSlash + 1))
+                } else {
+                    Pair("", pathAndProject)
+                }
 
             if (projectIdStr.isEmpty()) {
                 throw IllegalArgumentException("Project ID cannot be empty in DSN: $trimmed")

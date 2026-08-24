@@ -7,7 +7,6 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class ClientTest {
-
     @Test
     fun testIntoClient() {
         val c1 = Client.fromConfig("https://public@example.com/42%21")
@@ -18,15 +17,16 @@ class ClientTest {
         assertEquals(Scheme.Https, dsn1.scheme)
         assertEquals("42%21", dsn1.projectId.value)
 
-        val c2 = Client.fromConfig(
-            Pair(
-                "https://public@example.com/42%21",
-                ClientOptions(
-                    release = "foo@1.0",
-                    tracesSampler = { ctx -> if (ctx.name().isEmpty()) 0.0 else 1.0 },
-                )
+        val c2 =
+            Client.fromConfig(
+                Pair(
+                    "https://public@example.com/42%21",
+                    ClientOptions(
+                        release = "foo@1.0",
+                        tracesSampler = { ctx -> if (ctx.name().isEmpty()) 0.0 else 1.0 },
+                    ),
+                ),
             )
-        )
         val dsn2 = c2.dsn()
         assertNotNull(dsn2)
         assertEquals("public", dsn2.publicKey)
@@ -42,10 +42,11 @@ class ClientTest {
     @Test
     fun testUnwindSafe() {
         val transport = TestTransport.new()
-        val options = ClientOptions(
-            dsn = Dsn.parse("https://public@example.com/1"),
-            transport = { transport },
-        )
+        val options =
+            ClientOptions(
+                dsn = Dsn.parse("https://public@example.com/1"),
+                transport = { transport },
+            )
         val client = Client.from(options)
         Hub.current().bindClient(client)
         captureMessage("Hello World!", Level.Warning)

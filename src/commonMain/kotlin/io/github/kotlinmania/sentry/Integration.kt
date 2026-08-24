@@ -3,6 +3,7 @@ package io.github.kotlinmania.sentry
 
 public interface Integration {
     public val name: String get() = this::class.simpleName ?: "Integration"
+
     public fun setup(hub: Hub) {}
 }
 
