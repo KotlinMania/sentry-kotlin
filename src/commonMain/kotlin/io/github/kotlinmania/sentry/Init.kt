@@ -29,6 +29,8 @@ public fun initSentry(opts: ClientOptions): ClientInitGuard = sentryInit(opts)
 public fun initSentry(dsn: String): ClientInitGuard = sentryInit(dsn)
 
 public object Sentry {
+    public const val VERSION: String = "0.46.1"
+
     public fun init(opts: ClientOptions): ClientInitGuard = sentryInit(opts)
 
     public fun init(dsn: String): ClientInitGuard = sentryInit(dsn)
