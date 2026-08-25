@@ -2,26 +2,8 @@
 
 **Generated:** 2026-08-25
 **Source:** tmp/sentry/src
-**Target:** src/commonMain/kotlin/io/github/kotlinmania/sentry
+**Target:** src/commonMain/kotlin
 
 These are review proposals only. They are emitted when a Rust -> Kotlin pair matches only after fallback normalization, so the existing `port-lint` header is not an exact provenance match.
 
-| Target file | Current header | Proposed header | Source path | Reason |
-|-------------|----------------|-----------------|-------------|--------|
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Init.kt` | `// port-lint: source sentry/src/init.rs` | `// port-lint: source init.rs` | `init.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/init.rs' vs expected 'init.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Transport.kt` | `// port-lint: source sentry/src/transports/mod.rs` | `// port-lint: source transports/mod.rs` | `transports/mod.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/transports/mod.rs' vs expected 'transports/mod.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/RateLimiter.kt` | `// port-lint: source sentry/src/transports/ratelimit.rs` | `// port-lint: source transports/ratelimit.rs` | `transports/ratelimit.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/transports/ratelimit.rs' vs expected 'transports/ratelimit.rs'` |
-| `src/commonTest/kotlin/io/github/kotlinmania/sentry/RateLimiterTest.kt` | `// port-lint: source sentry/src/transports/ratelimit.rs` | `// port-lint: source transports/ratelimit.rs` | `transports/ratelimit.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/transports/ratelimit.rs' vs expected 'transports/ratelimit.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Defaults.kt` | `// port-lint: source sentry/src/defaults.rs` | `// port-lint: source defaults.rs` | `defaults.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/defaults.rs' vs expected 'defaults.rs'` |
-| `src/commonTest/kotlin/io/github/kotlinmania/sentry/DefaultsTest.kt` | `// port-lint: source sentry/src/defaults.rs` | `// port-lint: source defaults.rs` | `defaults.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/defaults.rs' vs expected 'defaults.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Hub.kt` | `// port-lint: source sentry/src/lib.rs` | `// port-lint: source lib.rs` | `lib.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/lib.rs' vs expected 'lib.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Client.kt` | `// port-lint: source sentry/src/lib.rs` | `// port-lint: source lib.rs` | `lib.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/lib.rs' vs expected 'lib.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/ClientOptions.kt` | `// port-lint: source sentry/src/lib.rs` | `// port-lint: source lib.rs` | `lib.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/lib.rs' vs expected 'lib.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Integration.kt` | `// port-lint: source sentry/src/lib.rs` | `// port-lint: source lib.rs` | `lib.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/lib.rs' vs expected 'lib.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Lib.kt` | `// port-lint: source sentry/src/lib.rs` | `// port-lint: source lib.rs` | `lib.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/lib.rs' vs expected 'lib.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Protocol.kt` | `// port-lint: source sentry/src/lib.rs` | `// port-lint: source lib.rs` | `lib.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/lib.rs' vs expected 'lib.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Scope.kt` | `// port-lint: source sentry/src/lib.rs` | `// port-lint: source lib.rs` | `lib.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/lib.rs' vs expected 'lib.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Session.kt` | `// port-lint: source sentry/src/lib.rs` | `// port-lint: source lib.rs` | `lib.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/lib.rs' vs expected 'lib.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Test.kt` | `// port-lint: source sentry/src/lib.rs` | `// port-lint: source lib.rs` | `lib.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/lib.rs' vs expected 'lib.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Transaction.kt` | `// port-lint: source sentry/src/lib.rs` | `// port-lint: source lib.rs` | `lib.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/lib.rs' vs expected 'lib.rs'` |
-| `src/commonMain/kotlin/io/github/kotlinmania/sentry/Types.kt` | `// port-lint: source sentry/src/lib.rs` | `// port-lint: source lib.rs` | `lib.rs` | `port-lint provenance header matched only after fallback normalization: 'sentry/src/lib.rs' vs expected 'lib.rs'` |
+_No fallback provenance matches detected._

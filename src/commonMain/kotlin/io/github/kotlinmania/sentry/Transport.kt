@@ -1,4 +1,4 @@
-// port-lint: source sentry/src/transports/mod.rs
+// port-lint: source transports/mod.rs
 package io.github.kotlinmania.sentry
 
 import kotlin.time.Duration
@@ -15,6 +15,11 @@ public fun interface TransportFactory {
     public fun createTransport(options: ClientOptions): Transport
 }
 
+/**
+ * The default HTTP transport type.
+ */
+public typealias HttpTransport = DefaultTransport
+
 public class DefaultTransport(
     public val options: ClientOptions,
 ) : Transport {
@@ -22,7 +27,6 @@ public class DefaultTransport(
 
     override fun sendEnvelope(envelope: Envelope) {
         val filtered = rateLimiter.filterEnvelope(envelope) ?: return
-        // In KMP default transport, can buffer or log envelope
     }
 
     override fun flush(timeout: Duration): Boolean = true
