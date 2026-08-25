@@ -1,4 +1,3 @@
-// port-lint: source sentry/src/lib.rs
 package io.github.kotlinmania.sentry
 
 public data class SamplingContext(

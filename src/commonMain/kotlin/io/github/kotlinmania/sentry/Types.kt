@@ -1,4 +1,3 @@
-// port-lint: source sentry/src/lib.rs
 package io.github.kotlinmania.sentry
 
 import kotlin.random.Random
