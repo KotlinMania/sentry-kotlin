@@ -86,22 +86,20 @@ public class Client(
     public companion object {
         public fun from(options: ClientOptions): Client = Client(options)
 
-        public fun fromConfig(config: Any?): Client =
-            when (config) {
-                is String -> {
-                    val dsn = Dsn.parse(config)
-                    Client(ClientOptions(dsn = dsn))
-                }
-                is Pair<*, *> -> {
-                    val dsnStr = config.first as? String
-                    val opts = config.second as? ClientOptions ?: ClientOptions()
-                    if (dsnStr != null) {
-                        opts.dsn = Dsn.parse(dsnStr)
-                    }
-                    Client(opts)
-                }
-                is ClientOptions -> Client(config)
-                else -> Client(ClientOptions())
+        public fun fromConfig(dsn: String?): Client =
+            if (dsn != null) {
+                val parsed = Dsn.parse(dsn)
+                Client(ClientOptions(dsn = parsed))
+            } else {
+                Client(ClientOptions())
             }
+
+        public fun fromConfig(options: ClientOptions): Client = Client(options)
+
+        public fun fromConfig(config: Pair<String, ClientOptions>): Client {
+            val opts = config.second
+            opts.dsn = Dsn.parse(config.first)
+            return Client(opts)
+        }
     }
 }

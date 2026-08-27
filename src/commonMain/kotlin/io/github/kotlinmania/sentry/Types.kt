@@ -188,13 +188,16 @@ public data class Dsn(
             val authPart = rest.substring(0, atIndex)
             val afterAuth = rest.substring(atIndex + 1)
 
-            val (publicKey, secretKey) =
-                if (authPart.contains(':')) {
-                    val parts = authPart.split(':', limit = 2)
-                    Pair(parts[0], parts[1])
-                } else {
-                    Pair(authPart, null)
-                }
+            val publicKey: String
+            val secretKey: String?
+            if (authPart.contains(':')) {
+                val parts = authPart.split(':', limit = 2)
+                publicKey = parts[0]
+                secretKey = parts[1]
+            } else {
+                publicKey = authPart
+                secretKey = null
+            }
 
             val slashIndex = afterAuth.indexOf('/')
             if (slashIndex == -1) {
@@ -203,21 +206,27 @@ public data class Dsn(
             val hostPort = afterAuth.substring(0, slashIndex)
             val pathAndProject = afterAuth.substring(slashIndex + 1)
 
-            val (host, port) =
-                if (hostPort.contains(':')) {
-                    val parts = hostPort.split(':', limit = 2)
-                    Pair(parts[0], parts[1].toIntOrNull())
-                } else {
-                    Pair(hostPort, null)
-                }
+            val host: String
+            val port: Int?
+            if (hostPort.contains(':')) {
+                val parts = hostPort.split(':', limit = 2)
+                host = parts[0]
+                port = parts[1].toIntOrNull()
+            } else {
+                host = hostPort
+                port = null
+            }
 
             val lastSlash = pathAndProject.lastIndexOf('/')
-            val (path, projectIdStr) =
-                if (lastSlash != -1) {
-                    Pair(pathAndProject.substring(0, lastSlash), pathAndProject.substring(lastSlash + 1))
-                } else {
-                    Pair("", pathAndProject)
-                }
+            val path: String
+            val projectIdStr: String
+            if (lastSlash != -1) {
+                path = pathAndProject.substring(0, lastSlash)
+                projectIdStr = pathAndProject.substring(lastSlash + 1)
+            } else {
+                path = ""
+                projectIdStr = pathAndProject
+            }
 
             if (projectIdStr.isEmpty()) {
                 throw IllegalArgumentException("Project ID cannot be empty in DSN: $trimmed")
