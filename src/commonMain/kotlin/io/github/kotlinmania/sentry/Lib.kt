@@ -1,4 +1,4 @@
-// port-lint: source sentry/src/lib.rs
+// port-lint: source lib.rs
 package io.github.kotlinmania.sentry
 
 public fun captureMessage(message: String, level: Level = Level.Info): Uuid? =

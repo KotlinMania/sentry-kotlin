@@ -1,4 +1,4 @@
-// port-lint: tests sentry/src/transports/ratelimit.rs
+// port-lint: tests transports/ratelimit.rs
 package io.github.kotlinmania.sentry
 
 import kotlin.test.Test
