@@ -1,4 +1,4 @@
-// port-lint: source defaults.rs
+// port-lint: source sentry/src/defaults.rs
 package io.github.kotlinmania.sentry
 
 public object Environment {
