@@ -1,4 +1,4 @@
-// port-lint: tests tests/test_processors.rs
+// port-lint: tests sentry/tests/test_processors.rs
 package io.github.kotlinmania.sentry
 
 import kotlin.test.Test

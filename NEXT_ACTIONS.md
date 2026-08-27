@@ -4,12 +4,12 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 5/11 (45.5%)
-- **Function parity:** 15/47 matched (target 47) — 31.9%
-- **Class/type parity:** 6/15 matched (target 12) — 40.0%
-- **Combined symbol parity:** 21/62 matched (target 59) — 33.9%
-- **Average inline-code cosine:** 0.34 (function body across 4 matched files)
-- **Average documentation cosine:** 0.00 (doc text across 4 matched files)
+- **Files Present:** 5/31 (16.1%)
+- **Function parity:** 15/111 matched (target 152) — 13.5%
+- **Class/type parity:** 6/18 matched (target 65) — 33.3%
+- **Combined symbol parity:** 21/129 matched (target 217) — 16.3%
+- **Average inline-code cosine:** 0.45 (function body across 3 matched files)
+- **Average documentation cosine:** 0.00 (doc text across 3 matched files)
 - **Cheat-zeroed Files:** 2
 - **Critical Issues:** 4 files with <0.60 function similarity
 
@@ -27,7 +27,7 @@ No missing high-value files detected.
 
 Every matched file is listed below with function and type symbol parity.
 
-### 1. init
+### 1. sentry.init
 
 - **Target:** `sentry.Init`
 - **Similarity:** 0.31
@@ -61,7 +61,7 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 3/3 matched (target 4)
 - **Missing types:** _none_
 
-### 4. defaults
+### 4. sentry.defaults
 
 - **Target:** `sentry.Defaults`
 - **Similarity:** 0.43
@@ -73,15 +73,15 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing types:** _none_
 - **Tests:** 1/1 matched
 
-### 5. lib
+### 5. sentry.lib
 
-- **Target:** `sentry.Lib [ZERO]`
+- **Target:** `sentry.Hub [STUB]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 10.0
-- **Functions:** 0/0 matched (target 17)
+- **Functions:** 0/0 matched (target 122)
 - **Missing functions:** _none_
-- **Types:** 0/0 matched (target 1)
+- **Types:** 0/0 matched (target 54)
 - **Missing types:** _none_
 
 ## Success Criteria

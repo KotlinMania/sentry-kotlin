@@ -1,3 +1,4 @@
+// port-lint: source sentry/src/lib.rs
 package io.github.kotlinmania.sentry
 
 public class Client(
