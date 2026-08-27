@@ -1,4 +1,4 @@
-// port-lint: source sentry/src/transports/mod.rs
+// port-lint: source transports/mod.rs
 package io.github.kotlinmania.sentry
 
 import kotlin.time.Duration
