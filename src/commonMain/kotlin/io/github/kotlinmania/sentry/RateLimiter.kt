@@ -1,4 +1,4 @@
-// port-lint: source transports/ratelimit.rs
+// port-lint: source sentry/src/transports/ratelimit.rs
 @file:OptIn(kotlin.time.ExperimentalTime::class)
 
 package io.github.kotlinmania.sentry
