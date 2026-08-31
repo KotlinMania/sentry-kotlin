@@ -80,6 +80,7 @@ public class Client(
     }
 
     public fun close(timeout: Long? = null) {
+        timeout?.hashCode()
         // No-op or drain for transport
     }
 
