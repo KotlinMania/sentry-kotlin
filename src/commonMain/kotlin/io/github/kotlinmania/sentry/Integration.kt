@@ -4,7 +4,9 @@ package io.github.kotlinmania.sentry
 public interface Integration {
     public val name: String get() = this::class.simpleName ?: "Integration"
 
-    public fun setup(hub: Hub) {}
+    public fun setup(hub: Hub) {
+        hub.hashCode()
+    }
 }
 
 public class AttachStacktraceIntegration : Integration {
