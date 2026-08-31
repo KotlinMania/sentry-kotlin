@@ -1,4 +1,4 @@
-// port-lint: tests defaults.rs
+// port-lint: tests sentry/src/defaults.rs
 package io.github.kotlinmania.sentry
 
 import kotlin.test.Test
