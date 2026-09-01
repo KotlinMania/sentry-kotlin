@@ -15,5 +15,13 @@
     "todos": true,
     "lint": true
   },
-  "reexport_modules": []
+  "reexport_modules": [
+    "lib",
+    "lib.rs",
+    "sentry/src/lib.rs",
+    "transports/mod",
+    "transports.mod",
+    "transports/mod.rs",
+    "sentry/src/transports/mod.rs"
+  ]
 }
