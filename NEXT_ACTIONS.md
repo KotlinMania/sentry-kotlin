@@ -4,13 +4,13 @@ Based on AST analysis, here are the concrete next steps.
 
 ## Summary
 
-- **Files Present:** 5/11 (45.5%)
-- **Function parity:** 15/47 matched (target 154) — 31.9%
-- **Class/type parity:** 6/15 matched (target 65) — 40.0%
-- **Combined symbol parity:** 21/62 matched (target 219) — 33.9%
+- **Files Present:** 5/31 (16.1%)
+- **Function parity:** 15/111 matched (target 30) — 13.5%
+- **Class/type parity:** 6/18 matched (target 11) — 33.3%
+- **Combined symbol parity:** 21/129 matched (target 41) — 16.3%
 - **Average inline-code cosine:** 0.45 (function body across 3 matched files)
 - **Average documentation cosine:** 0.00 (doc text across 3 matched files)
-- **Cheat-zeroed Files:** 2
+- **Cheat-zeroed Files:** 1
 - **Critical Issues:** 4 files with <0.60 function similarity
 
 ## Priority 1: Fix Incomplete High-Dependency Files
@@ -27,9 +27,9 @@ No missing high-value files detected.
 
 Every matched file is listed below with function and type symbol parity.
 
-### 1. init
+### 1. sentry.init
 
-- **Target:** `sentry.Init [PROVENANCE-FALLBACK]`
+- **Target:** `sentry.Init`
 - **Similarity:** 0.31
 - **Dependents:** 0
 - **Priority Score:** 30606.9
@@ -37,13 +37,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** `deref`, `drop`
 - **Types:** 1/2 matched
 - **Missing types:** `Target`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/init.rs` vs expected `init.rs`
-- **Proposed provenance header:** `// port-lint: source init.rs` (current: `// port-lint: source sentry/src/init.rs`)
-- **Lint issues:** 1
 
 ### 2. transports.ratelimit
 
-- **Target:** `sentry.RateLimiter [PROVENANCE-FALLBACK]`
+- **Target:** `sentry.RateLimiter`
 - **Similarity:** 0.62
 - **Dependents:** 0
 - **Priority Score:** 1203.8
@@ -52,15 +49,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 2/2 matched (target 3)
 - **Missing types:** _none_
 - **Tests:** 3/3 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/transports/ratelimit.rs` vs expected `transports/ratelimit.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:sentry/src/transports/ratelimit.rs` vs expected `transports/ratelimit.rs`
-- **Proposed provenance header:** `// port-lint: source transports/ratelimit.rs` (current: `// port-lint: source sentry/src/transports/ratelimit.rs`)
-- **Proposed provenance header:** `// port-lint: tests transports/ratelimit.rs` (current: `// port-lint: tests sentry/src/transports/ratelimit.rs`)
-- **Lint issues:** 2
 
 ### 3. transports.mod
 
-- **Target:** `sentry.Transport [STUB] [PROVENANCE-FALLBACK]`
+- **Target:** `sentry.Transport [STUB]`
 - **Similarity:** 0.00
 - **Dependents:** 0
 - **Priority Score:** 410.0
@@ -68,13 +60,10 @@ Every matched file is listed below with function and type symbol parity.
 - **Missing functions:** _none_
 - **Types:** 3/3 matched (target 4)
 - **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/transports/mod.rs` vs expected `transports/mod.rs`
-- **Proposed provenance header:** `// port-lint: source transports/mod.rs` (current: `// port-lint: source sentry/src/transports/mod.rs`)
-- **Lint issues:** 1
 
-### 4. defaults
+### 4. sentry.defaults
 
-- **Target:** `sentry.Defaults [PROVENANCE-FALLBACK]`
+- **Target:** `sentry.Defaults`
 - **Similarity:** 0.43
 - **Dependents:** 0
 - **Priority Score:** 205.7
@@ -83,47 +72,6 @@ Every matched file is listed below with function and type symbol parity.
 - **Types:** 0/0 matched (target 2)
 - **Missing types:** _none_
 - **Tests:** 1/1 matched
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/defaults.rs` vs expected `defaults.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:sentry/src/defaults.rs` vs expected `defaults.rs`
-- **Proposed provenance header:** `// port-lint: source defaults.rs` (current: `// port-lint: source sentry/src/defaults.rs`)
-- **Proposed provenance header:** `// port-lint: tests defaults.rs` (current: `// port-lint: tests sentry/src/defaults.rs`)
-- **Lint issues:** 2
-
-### 5. lib
-
-- **Target:** `sentry.Hub [STUB] [PROVENANCE-FALLBACK]`
-- **Similarity:** 0.00
-- **Dependents:** 0
-- **Priority Score:** 10.0
-- **Functions:** 0/0 matched (target 124)
-- **Missing functions:** _none_
-- **Types:** 0/0 matched (target 54)
-- **Missing types:** _none_
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/lib.rs` vs expected `lib.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/lib.rs` vs expected `lib.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/lib.rs` vs expected `lib.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/lib.rs` vs expected `lib.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/lib.rs` vs expected `lib.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/lib.rs` vs expected `lib.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/lib.rs` vs expected `lib.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/lib.rs` vs expected `lib.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/lib.rs` vs expected `lib.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/lib.rs` vs expected `lib.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `sentry/src/lib.rs` vs expected `lib.rs`
-- **Provenance warning:** port-lint provenance header matched only after fallback normalization: `tests:sentry/src/lib.rs` vs expected `lib.rs`
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source sentry/src/lib.rs`)
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source sentry/src/lib.rs`)
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source sentry/src/lib.rs`)
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source sentry/src/lib.rs`)
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source sentry/src/lib.rs`)
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source sentry/src/lib.rs`)
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source sentry/src/lib.rs`)
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source sentry/src/lib.rs`)
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source sentry/src/lib.rs`)
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source sentry/src/lib.rs`)
-- **Proposed provenance header:** `// port-lint: source lib.rs` (current: `// port-lint: source sentry/src/lib.rs`)
-- **Proposed provenance header:** `// port-lint: tests lib.rs` (current: `// port-lint: tests sentry/src/lib.rs`)
-- **Lint issues:** 12
 
 ## Success Criteria
 
@@ -133,4 +81,17 @@ For each file to be considered "complete":
 - All tests ported
 - Documentation ported
 - port-lint header present
+
+## Reexport / Wiring Modules
+
+These files match `reexport_modules` patterns in `.ast_distance_config.json`. They are filtered out of
+normal priority and missing-file ladders because they are wiring
+modules, not direct logic ports. Consult them for call-site routing;
+do not treat them as the next implementation target by default.
+
+### Matched
+
+| Source | Target | Path |
+|--------|--------|------|
+| `sentry.lib` | `sentry.Hub` | `sentry/src/lib` |
 
