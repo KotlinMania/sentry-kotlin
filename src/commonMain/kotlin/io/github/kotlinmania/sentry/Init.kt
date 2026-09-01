@@ -1,4 +1,4 @@
-// port-lint: source sentry/src/init.rs
+// port-lint: source init.rs
 package io.github.kotlinmania.sentry
 
 public class ClientInitGuard(

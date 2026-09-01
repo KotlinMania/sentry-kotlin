@@ -2,7 +2,7 @@
   "type": "port",
   "name": "sentry-kotlin",
   "source": {
-    "path": "tmp",
+    "path": "tmp/sentry/src",
     "lang": "rust"
   },
   "target": {

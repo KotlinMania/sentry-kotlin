@@ -1,4 +1,4 @@
-// port-lint: source sentry/src/lib.rs
+// port-lint: source lib.rs
 @file:OptIn(kotlin.time.ExperimentalTime::class)
 
 package io.github.kotlinmania.sentry
