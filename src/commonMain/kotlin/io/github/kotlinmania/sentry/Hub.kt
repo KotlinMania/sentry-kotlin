@@ -150,7 +150,10 @@ public class Hub(
     public fun addBreadcrumb(factory: () -> Any?) {
         val result = factory() ?: return
         when (result) {
-            is Breadcrumb -> addBreadcrumb(result)
+            is Breadcrumb -> {
+                addBreadcrumb(result)
+            }
+
             is List<*> -> {
                 for (item in result) {
                     if (item is Breadcrumb) {

@@ -94,12 +94,19 @@ public class RateLimiter {
             envelope.items.filter { item ->
                 val cat =
                     when (item) {
-                        is EnvelopeItem.Event -> RateLimitingCategory.Error
-                        is EnvelopeItem.Attachment -> RateLimitingCategory.Attachment
-                        is EnvelopeItem.ItemContainer ->
+                        is EnvelopeItem.Event -> {
+                            RateLimitingCategory.Error
+                        }
+
+                        is EnvelopeItem.Attachment -> {
+                            RateLimitingCategory.Attachment
+                        }
+
+                        is EnvelopeItem.ItemContainer -> {
                             when (item.container) {
                                 is ItemContainer.Logs -> RateLimitingCategory.LogItem
                             }
+                        }
                     }
                 isEnabled(cat)
             }

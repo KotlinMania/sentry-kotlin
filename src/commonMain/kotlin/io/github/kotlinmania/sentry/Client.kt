@@ -39,8 +39,8 @@ public class Client(
                     if (options.tracesSampler != null) {
                         val ctx =
                             TransactionContext(
-                                name = processedEvent.transaction ?: "",
-                                op = traceCtx?.op ?: "",
+                                name = processedEvent.transaction.orEmpty(),
+                                op = traceCtx?.op.orEmpty(),
                                 traceId = traceId,
                                 spanId = traceCtx?.spanId ?: SpanId.random(),
                             )
