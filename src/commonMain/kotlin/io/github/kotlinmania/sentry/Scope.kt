@@ -101,8 +101,9 @@ public class Scope {
         if (contexts.isNotEmpty()) {
             event.contexts = contexts + event.contexts
         }
-        if (user != null && event.user == null) {
-            event.user = user
+        val u = user
+        if (u != null && event.user == null) {
+            event.user = u
         }
         val lvl = level
         if (lvl != null && event.level == Level.Info) {

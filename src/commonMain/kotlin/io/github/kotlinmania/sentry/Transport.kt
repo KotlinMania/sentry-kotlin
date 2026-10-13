@@ -26,7 +26,7 @@ public class DefaultTransport(
     private val rateLimiter = RateLimiter.new()
 
     override fun sendEnvelope(envelope: Envelope) {
-        val filtered = rateLimiter.filterEnvelope(envelope) ?: return
+        rateLimiter.filterEnvelope(envelope) ?: return
     }
 
     override fun flush(timeout: Duration): Boolean = true
